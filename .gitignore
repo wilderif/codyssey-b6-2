@@ -1,0 +1,90 @@
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor and IDE state
+.idea/
+.vscode/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+id_rsa
+id_ed25519
+
+# Logs
+*.log
+*.out
+*.err
+
+# Local databases and runtime state
+*.sqlite
+*.sqlite3
+*.db
+*.pid
+*.pid.lock
+
+# Caches and temp files
+.cache/
+.tmp/
+tmp/
+temp/
+
+# Tool-generated local files
+.direnv/
+
+# Python
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.pyre/
+.hypothesis/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Build and packaging outputs
+build/
+dist/
+site/
+.eggs/
+*.egg
+*.egg-info/
+pip-wheel-metadata/
+
+# Test and coverage artifacts
+.coverage
+.coverage.*
+coverage/
+htmlcov/
+
+# Tooling and local state
+.ipynb_checkpoints/
+.tox/
+.nox/
+
+# Agent
+tmp.md
+AGENTS.md
+.agent/
