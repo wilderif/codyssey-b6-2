@@ -12,7 +12,7 @@ from validators import ValidationResult, mask_sensitive_text, validate_commit_me
 
 
 # Default model used for both commit and PR draft generation.
-DEFAULT_MODEL = "gpt-5.1-mini"
+DEFAULT_MODEL = "gpt-5.4-mini"
 
 # Default sampling temperature for stable draft output.
 DEFAULT_TEMPERATURE = 0.2
