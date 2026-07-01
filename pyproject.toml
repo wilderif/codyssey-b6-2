@@ -1,0 +1,9 @@
+[project]
+name = "codyssey-b6-2"
+version = "0.1.0"
+description = "AI Git commit and pull request draft generator"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "requests",
+]
