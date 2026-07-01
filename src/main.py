@@ -4,12 +4,16 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Callable
+import sys
 
 from ai_client import AiClientError, request_generated_text
 from git_utils import GitChangeContext, collect_git_context
 from prompts import build_commit_prompt, build_correction_prompt, build_pr_prompt
 from validators import ValidationResult, mask_sensitive_text, validate_commit_message, validate_pr_draft
 
+
+# Supported CLI command names.
+COMMAND_NAMES = ("commit", "pr")
 
 # Default model used for both commit and PR draft generation.
 DEFAULT_MODEL = "gpt-5.4-mini"
@@ -28,6 +32,25 @@ PR_COMMAND = "pr"
 
 # Divider line used to make terminal output copy-friendly.
 OUTPUT_DIVIDER = "-" * 48
+
+
+def normalize_cli_args(argv: list[str]) -> list[str]:
+    """Normalize command names and long option names to lowercase."""
+
+    normalized_args = []
+    for index, arg in enumerate(argv):
+        if index == 0 and arg.lower() in COMMAND_NAMES:
+            normalized_args.append(arg.lower())
+            continue
+
+        if arg.startswith("--"):
+            option_name, separator, option_value = arg.partition("=")
+            normalized_args.append(option_name.lower() + separator + option_value)
+            continue
+
+        normalized_args.append(arg)
+
+    return normalized_args
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -212,7 +235,8 @@ def main(argv: list[str] | None = None) -> int:
     """Parse command-line arguments and run the CLI."""
 
     parser = build_parser()
-    args = parser.parse_args(argv)
+    raw_args = sys.argv[1:] if argv is None else argv
+    args = parser.parse_args(normalize_cli_args(raw_args))
     return run(args)
 
 
