@@ -88,14 +88,6 @@ def get_unstaged_diff() -> str:
     return run_git_command(["diff"])
 
 
-def has_changes(status: str | None = None) -> bool:
-    """Return whether the given or current Git status has changes."""
-
-    if status is None:
-        status = get_git_status()
-    return bool(status.strip())
-
-
 def collect_git_context() -> GitChangeContext:
     """Collect Git status plus staged and unstaged diffs."""
 

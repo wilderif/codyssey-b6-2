@@ -67,16 +67,16 @@ def split_title_and_body(text: str) -> tuple[str, str]:
     return "", ""
 
 
-def get_bullet_lines(text: str) -> list[str]:
-    """Return Markdown bullet lines from text."""
+def count_bullet_lines(text: str) -> int:
+    """Return the number of Markdown bullet lines in text."""
 
-    return [line for line in text.splitlines() if BULLET_PATTERN.match(line)]
+    return sum(1 for line in text.splitlines() if BULLET_PATTERN.match(line))
 
 
-def has_file_or_module_reference(text: str) -> bool:
-    """Return whether text mentions a file path, file name, or module."""
+def count_file_or_module_references(text: str) -> int:
+    """Return the number of file, path, or module references in text."""
 
-    return bool(FILE_OR_MODULE_PATTERN.search(text))
+    return len(FILE_OR_MODULE_PATTERN.findall(text))
 
 
 def validate_commit_message(text: str) -> ValidationResult:
@@ -90,10 +90,15 @@ def validate_commit_message(text: str) -> ValidationResult:
     elif len(title) > MAX_COMMIT_TITLE_LENGTH:
         errors.append(f"커밋 제목은 최대 {MAX_COMMIT_TITLE_LENGTH}자여야 합니다.")
 
+    bullet_count = count_bullet_lines(body)
+    reference_count = count_file_or_module_references(body)
+    has_valid_bullets = 1 <= bullet_count <= 2
+    has_valid_references = 1 <= reference_count <= 3
+
     if not body:
         errors.append("커밋 본문이 필요합니다.")
-    elif not get_bullet_lines(body) and not has_file_or_module_reference(body):
-        errors.append("커밋 본문에는 변경 파일/모듈 또는 불릿 요약이 필요합니다.")
+    elif not has_valid_bullets and not has_valid_references:
+        errors.append("커밋 본문에는 변경 파일/모듈 1~3개 또는 불릿 요약 1~2개가 필요합니다.")
 
     return ValidationResult(errors)
 

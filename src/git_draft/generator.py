@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import argparse
-from collections.abc import Callable
 
-from ai_client import AiClientError, request_generated_text
-from cli import COMMIT_COMMAND
-from git_utils import GitChangeContext, collect_git_context
-from prompts import build_commit_prompt, build_correction_prompt, build_pr_prompt
-from validators import (
+from git_draft.ai_client import AiClientError, request_generated_text
+from git_draft.cli import COMMIT_COMMAND
+from git_draft.git_utils import GitChangeContext, collect_git_context
+from git_draft.prompts import build_commit_prompt, build_correction_prompt, build_pr_prompt
+from git_draft.validators import (
     ValidationResult,
     mask_sensitive_text,
     validate_commit_message,
@@ -37,20 +36,20 @@ def prepare_prompt_context(git_context: GitChangeContext, safe_mode: bool) -> st
     return prompt_context
 
 
-def get_prompt_builder(command: str) -> Callable[[str], str]:
-    """Return the prompt builder for a CLI command."""
+def build_prompt(command: str, prompt_context: str) -> str:
+    """Build the correct prompt for the selected command."""
 
     if command == COMMIT_COMMAND:
-        return build_commit_prompt
-    return build_pr_prompt
+        return build_commit_prompt(prompt_context)
+    return build_pr_prompt(prompt_context)
 
 
-def get_validator(command: str) -> Callable[[str], ValidationResult]:
-    """Return the output validator for a CLI command."""
+def validate_draft(command: str, draft_text: str) -> ValidationResult:
+    """Validate generated text for the selected command."""
 
     if command == COMMIT_COMMAND:
-        return validate_commit_message
-    return validate_pr_draft
+        return validate_commit_message(draft_text)
+    return validate_pr_draft(draft_text)
 
 
 def get_output_label(command: str) -> str:
@@ -64,7 +63,6 @@ def get_output_label(command: str) -> str:
 def generate_validated_draft(args: argparse.Namespace, prompt: str) -> tuple[str | None, int, ValidationResult]:
     """Generate a draft and retry once when validation fails."""
 
-    validator = get_validator(args.command)
     request_count = 0
 
     print("[INFO] AI API 요청 중...")
@@ -76,7 +74,7 @@ def generate_validated_draft(args: argparse.Namespace, prompt: str) -> tuple[str
         max_tokens=args.max_tokens,
     ).strip()
 
-    validation_result = validator(generated_text)
+    validation_result = validate_draft(args.command, generated_text)
     if validation_result.is_valid:
         return generated_text, request_count, validation_result
 
@@ -96,7 +94,7 @@ def generate_validated_draft(args: argparse.Namespace, prompt: str) -> tuple[str
         max_tokens=args.max_tokens,
     ).strip()
 
-    retry_validation_result = validator(corrected_text)
+    retry_validation_result = validate_draft(args.command, corrected_text)
     if retry_validation_result.is_valid:
         return corrected_text, request_count, retry_validation_result
 
@@ -106,11 +104,12 @@ def generate_validated_draft(args: argparse.Namespace, prompt: str) -> tuple[str
 def print_draft(command: str, draft_text: str, request_count: int) -> None:
     """Print the final generated draft for user review."""
 
-    print(f"[DONE] {get_output_label(command)} 생성 완료")
+    label = get_output_label(command)
+    print(f"[DONE] {label} 생성 완료")
     print(f"[INFO] AI API 요청 시도 횟수: {request_count}")
     print()
     print(OUTPUT_DIVIDER)
-    print(f"{get_output_label(command)} - 검토용 초안")
+    print(f"{label} - 검토용 초안")
     print(OUTPUT_DIVIDER)
     print(draft_text)
     print(OUTPUT_DIVIDER)
@@ -141,7 +140,7 @@ def run_generation(args: argparse.Namespace) -> int:
     print(f"[INFO] Git diff 수집 완료: {count_non_empty_lines(git_context.combined_diff())}줄")
 
     prompt_context = prepare_prompt_context(git_context, args.safe_mode)
-    prompt = get_prompt_builder(args.command)(prompt_context)
+    prompt = build_prompt(args.command, prompt_context)
 
     try:
         draft_text, request_count, validation_result = generate_validated_draft(args, prompt)

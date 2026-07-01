@@ -5,8 +5,8 @@ from __future__ import annotations
 import argparse
 import sys
 
-from cli import build_parser, normalize_cli_args
-from generator import run_generation
+from git_draft.cli import build_parser, normalize_cli_args
+from git_draft.generator import run_generation
 
 
 def run(args: argparse.Namespace) -> int:

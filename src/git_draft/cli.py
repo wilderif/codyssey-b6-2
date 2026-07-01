@@ -5,8 +5,14 @@ from __future__ import annotations
 import argparse
 
 
+# Command name for commit message draft generation.
+COMMIT_COMMAND = "commit"
+
+# Command name for pull request draft generation.
+PR_COMMAND = "pr"
+
 # Supported CLI command names.
-COMMAND_NAMES = ("commit", "pr")
+COMMAND_NAMES = (COMMIT_COMMAND, PR_COMMAND)
 
 # Default model used for both commit and PR draft generation.
 DEFAULT_MODEL = "gpt-5.4-mini"
@@ -16,13 +22,6 @@ DEFAULT_TEMPERATURE = 0.2
 
 # Default maximum generated token count passed as max_output_tokens.
 DEFAULT_MAX_TOKENS = 800
-
-# Command name for commit message draft generation.
-COMMIT_COMMAND = "commit"
-
-# Command name for pull request draft generation.
-PR_COMMAND = "pr"
-
 
 def normalize_cli_args(argv: list[str]) -> list[str]:
     """Normalize command names and long option names to lowercase."""
@@ -34,6 +33,7 @@ def normalize_cli_args(argv: list[str]) -> list[str]:
             continue
 
         if arg.startswith("--"):
+            # Keep option values unchanged while normalizing names like --Model or --MAX-TOKENS.
             option_name, separator, option_value = arg.partition("=")
             normalized_args.append(option_name.lower() + separator + option_value)
             continue

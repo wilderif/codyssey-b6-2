@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import os
 from typing import Any
 
@@ -56,7 +55,7 @@ def extract_error_message(response: requests.Response) -> str:
 
     try:
         data = response.json()
-    except json.JSONDecodeError:
+    except ValueError:
         return response.text.strip()
 
     error = data.get("error")
@@ -105,6 +104,7 @@ def extract_output_text(response_data: dict[str, Any]) -> str:
     if not isinstance(output_items, list):
         raise AiClientError("OpenAI API 응답 형식이 올바르지 않습니다.")
 
+    # Responses can store text inside output item content, so walk that nested shape.
     for output_item in output_items:
         if not isinstance(output_item, dict):
             continue
@@ -166,7 +166,7 @@ def request_generated_text(
 
     try:
         response_data = response.json()
-    except json.JSONDecodeError as exc:
+    except ValueError as exc:
         raise AiClientError("OpenAI API 응답을 JSON으로 해석할 수 없습니다.") from exc
 
     return extract_output_text(response_data)
