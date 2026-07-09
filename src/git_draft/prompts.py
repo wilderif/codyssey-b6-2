@@ -6,9 +6,8 @@ from __future__ import annotations
 # Allowed conventional commit prefixes for generated commit and PR titles.
 CONVENTIONAL_TYPES = ("feat", "fix", "docs", "refactor", "test", "chore")
 
-# Shared language and formatting rules for every generated draft.
+# Shared formatting rules for every generated draft.
 COMMON_OUTPUT_RULES = """\
-- Write the generated draft in Korean.
 - Keep conventional commit prefixes such as feat:, fix:, docs:, refactor:, test:, or chore: in English.
 - Do not wrap the answer in a code block.
 - Do not include explanations before or after the draft.
@@ -20,16 +19,11 @@ COMMIT_OUTPUT_RULES = """\
 Output format:
 <one-line commit title>
 
-- <body bullet 1>
-- <body bullet 2>
-
 Rules:
 - The commit title must start with one conventional commit prefix.
 - Choose the prefix from: {types}.
 - Prefer a title within 50 characters; never exceed 72 characters.
-- Include a commit body by default.
-- The body must include either 1 to 3 changed files/modules or 1 to 2 bullet points summarizing key changes.
-- Keep the body concise and copy-friendly.
+- Return only the one-line commit title.
 """.format(types=", ".join(f"{commit_type}:" for commit_type in CONVENTIONAL_TYPES))
 
 # Required output rules for pull request draft generation.

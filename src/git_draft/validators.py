@@ -26,11 +26,6 @@ LONG_TOKEN_PATTERN = re.compile(
     r"(?<![A-Za-z0-9_-])(?:sk-[A-Za-z0-9_-]{20,}|[A-Za-z0-9][A-Za-z0-9_-]{31,})(?![A-Za-z0-9_-])"
 )
 
-# Matches simple file paths, file names, and module references in generated text.
-FILE_OR_MODULE_PATTERN = re.compile(
-    r"(`?[\w.-]+/[\w./-]+`?|`?[\w-]+\.(?:py|md|toml|txt|json|ya?ml|lock)`?|\b[\w_]+\s+(?:module|모듈))"
-)
-
 # Matches Markdown bullet lines with visible content.
 BULLET_PATTERN = re.compile(r"^\s*[-*]\s+\S+")
 
@@ -67,38 +62,19 @@ def split_title_and_body(text: str) -> tuple[str, str]:
     return "", ""
 
 
-def count_bullet_lines(text: str) -> int:
-    """Return the number of Markdown bullet lines in text."""
-
-    return sum(1 for line in text.splitlines() if BULLET_PATTERN.match(line))
-
-
-def count_file_or_module_references(text: str) -> int:
-    """Return the number of file, path, or module references in text."""
-
-    return len(FILE_OR_MODULE_PATTERN.findall(text))
-
-
 def validate_commit_message(text: str) -> ValidationResult:
-    """Validate commit title length and commit body requirements."""
+    """Validate commit title length and one-line format."""
 
     errors = []
-    title, body = split_title_and_body(text)
+    title, remaining_text = split_title_and_body(text)
 
     if not title:
         errors.append("커밋 제목이 필요합니다.")
     elif len(title) > MAX_COMMIT_TITLE_LENGTH:
         errors.append(f"커밋 제목은 최대 {MAX_COMMIT_TITLE_LENGTH}자여야 합니다.")
 
-    bullet_count = count_bullet_lines(body)
-    reference_count = count_file_or_module_references(body)
-    has_valid_bullets = 1 <= bullet_count <= 2
-    has_valid_references = 1 <= reference_count <= 3
-
-    if not body:
-        errors.append("커밋 본문이 필요합니다.")
-    elif not has_valid_bullets and not has_valid_references:
-        errors.append("커밋 본문에는 변경 파일/모듈 1~3개 또는 불릿 요약 1~2개가 필요합니다.")
+    if remaining_text:
+        errors.append("커밋 메시지는 한 줄 제목만 포함해야 합니다.")
 
     return ValidationResult(errors)
 

@@ -47,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
     """Build the command-line argument parser."""
 
     parser = argparse.ArgumentParser(
-        description="Generate Korean commit messages and PR drafts from local Git changes.",
+        description="Generate commit messages and PR drafts from local Git changes.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 

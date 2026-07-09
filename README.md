@@ -7,7 +7,7 @@ Git 로컬 변경사항을 수집해 OpenAI Responses API로 커밋 메시지와
 ## 주요 기능
 
 - 로컬 Git 변경 파일 목록과 staged/unstaged diff 수집
-- 한국어 커밋 메시지 초안 생성
+- 커밋 메시지 초안 생성
 - `Why`, `What`, `How to Test` 구조의 PR 초안 생성
 - 생성 결과 형식 검증 및 실패 시 최대 1회 재요청
 - `--safe-mode`를 통한 민감정보 패턴 마스킹
@@ -174,10 +174,7 @@ git diff --cached
 ------------------------------------------------
 Commit Message Draft - 검토용 초안
 ------------------------------------------------
-feat: Git 변경 기반 커밋 메시지 생성 추가
-
-- git status와 diff 결과를 수집해 AI 프롬프트 입력으로 구성
-- 생성된 커밋 제목과 본문 형식을 검증하도록 구현
+feat: Add Git-based commit message generation
 ------------------------------------------------
 ```
 
@@ -194,17 +191,17 @@ feat: Git 변경 기반 커밋 메시지 생성 추가
 ------------------------------------------------
 Pull Request Draft - 검토용 초안
 ------------------------------------------------
-feat: Git 변경사항 기반 PR 초안 생성 추가
+feat: Add Git-based PR draft generation
 
 ## Why
-- 변경사항을 기반으로 리뷰어가 빠르게 맥락을 파악할 수 있는 PR 설명이 필요했습니다.
+- Reviewers need concise PR context based on local Git changes.
 
 ## What
-- staged와 unstaged diff를 수집해 AI 입력 컨텍스트로 전달했습니다.
-- PR 제목과 본문에 필요한 섹션 구조를 프롬프트에 포함했습니다.
+- Collect staged and unstaged diffs for the AI prompt context.
+- Include the required PR title and body section structure in the prompt.
 
 ## How to Test
-- `uv run python src/main.py pr --safe-mode`를 실행해 PR 초안이 출력되는지 확인합니다.
+- Run `uv run python src/main.py pr --safe-mode` and confirm a PR draft is printed.
 ------------------------------------------------
 ```
 
@@ -286,6 +283,6 @@ uv run python src/main.py commit --model gpt-5.4-mini --temperature 0.2 --max-to
 
 - Git 변경사항이 없을 때 AI API를 호출하지 않는지 확인
 - `AI_API_KEY`가 없을 때 명확한 오류가 출력되는지 확인
-- 커밋 초안에 한 줄 제목과 본문 bullet이 포함되는지 확인
+- 커밋 초안에 한 줄 제목만 포함되는지 확인
 - PR 초안에 `Why`, `What`, `How to Test` 섹션과 각 섹션 bullet이 포함되는지 확인
 - `--safe-mode` 실행 시 민감정보 마스킹 안내가 출력되는지 확인
