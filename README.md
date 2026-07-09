@@ -13,6 +13,38 @@ Git 로컬 변경사항을 수집해 OpenAI Responses API로 커밋 메시지와
 - `--safe-mode`를 통한 민감정보 패턴 마스킹
 - OpenAI Responses API REST 호출
 
+## 폴더 구조
+
+```text
+.
+├── README.md
+├── demo_changes
+│   └── demo_file.py
+├── pyproject.toml
+├── requirements.txt
+├── src
+│   ├── main.py
+│   └── git_draft
+│       ├── __init__.py
+│       ├── ai_client.py
+│       ├── cli.py
+│       ├── generator.py
+│       ├── git_utils.py
+│       ├── prompts.py
+│       └── validators.py
+└── uv.lock
+```
+
+- `src/main.py`: CLI 엔트리 포인트
+- `src/git_draft/cli.py`: 명령어와 옵션 파싱
+- `src/git_draft/git_utils.py`: `git status`, `git diff` 변경사항 수집
+- `src/git_draft/ai_client.py`: OpenAI Responses API REST 요청 처리
+- `src/git_draft/prompts.py`: 커밋 메시지와 PR 초안 프롬프트 생성
+- `src/git_draft/validators.py`: 생성 결과 형식 검증과 safe-mode 마스킹
+- `src/git_draft/generator.py`: Git 수집, AI 호출, 검증, 출력 흐름 조합
+- `demo_changes/demo_file.py`: commit/pr 시연용 빈 Python 파일
+- `pyproject.toml`, `uv.lock`, `requirements.txt`: 의존성 관리 파일
+
 ## 설치
 
 Python 3.10 이상이 필요합니다. `uv`를 사용하는 방법과 일반 Python 가상환경을 사용하는 방법 중 하나를 선택할 수 있습니다.
