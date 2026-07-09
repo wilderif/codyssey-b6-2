@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import sys
 
+from dotenv import load_dotenv
+
 from git_draft.cli import build_parser, normalize_cli_args
 from git_draft.generator import run_generation
 
@@ -18,6 +20,7 @@ def run(args: argparse.Namespace) -> int:
 def main(argv: list[str] | None = None) -> int:
     """Parse command-line arguments and run the CLI."""
 
+    load_dotenv()
     parser = build_parser()
     # Use terminal arguments by default, but allow tests to pass argv directly.
     raw_args = sys.argv[1:] if argv is None else argv
