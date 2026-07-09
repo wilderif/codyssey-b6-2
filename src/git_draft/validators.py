@@ -50,6 +50,14 @@ class ValidationResult:
         return "\n".join(f"- {error}" for error in self.errors)
 
 
+def mask_sensitive_text(text: str) -> str:
+    """Mask emails, bearer tokens, and long API-key-like tokens."""
+
+    masked = EMAIL_PATTERN.sub("[EMAIL_MASKED]", text)
+    masked = BEARER_TOKEN_PATTERN.sub("Bearer [TOKEN_MASKED]", masked)
+    return LONG_TOKEN_PATTERN.sub("[TOKEN_MASKED]", masked)
+
+
 def split_title_and_body(text: str) -> tuple[str, str]:
     """Split generated text into the first non-empty title line and body."""
 
@@ -133,11 +141,3 @@ def validate_pr_draft(text: str) -> ValidationResult:
             errors.append(f"PR 본문의 {section_name} 섹션에는 최소 1개 불릿이 필요합니다.")
 
     return ValidationResult(errors)
-
-
-def mask_sensitive_text(text: str) -> str:
-    """Mask emails, bearer tokens, and long API-key-like tokens."""
-
-    masked = EMAIL_PATTERN.sub("[EMAIL_MASKED]", text)
-    masked = BEARER_TOKEN_PATTERN.sub("Bearer [TOKEN_MASKED]", masked)
-    return LONG_TOKEN_PATTERN.sub("[TOKEN_MASKED]", masked)

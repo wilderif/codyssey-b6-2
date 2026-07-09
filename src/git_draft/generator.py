@@ -52,14 +52,6 @@ def validate_draft(command: str, draft_text: str) -> ValidationResult:
     return validate_pr_draft(draft_text)
 
 
-def get_output_label(command: str) -> str:
-    """Return the terminal label for generated draft output."""
-
-    if command == COMMIT_COMMAND:
-        return "Commit Message Draft"
-    return "Pull Request Draft"
-
-
 def generate_validated_draft(args: argparse.Namespace, prompt: str) -> tuple[str | None, int, ValidationResult]:
     """Generate a draft and retry once when validation fails."""
 
@@ -99,6 +91,14 @@ def generate_validated_draft(args: argparse.Namespace, prompt: str) -> tuple[str
         return corrected_text, request_count, retry_validation_result
 
     return None, request_count, retry_validation_result
+
+
+def get_output_label(command: str) -> str:
+    """Return the terminal label for generated draft output."""
+
+    if command == COMMIT_COMMAND:
+        return "Commit Message Draft"
+    return "Pull Request Draft"
 
 
 def print_draft(command: str, draft_text: str, request_count: int) -> None:
