@@ -276,7 +276,7 @@ uv run python src/main.py commit
 uv run python src/main.py commit --safe-mode
 uv run python src/main.py pr
 uv run python src/main.py pr --safe-mode
-uv run python src/main.py commit --model gpt-5.4-mini --temperature 0.2 --max-tokens 800
+uv run python src/main.py pr --model gpt-5.4-mini --temperature 0.2 --max-tokens 16
 ```
 
 확인할 항목:
