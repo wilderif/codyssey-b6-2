@@ -137,7 +137,7 @@ def run_generation(args: argparse.Namespace) -> int:
         return 0
 
     print(f"[INFO] Git status 수집 완료: {count_non_empty_lines(git_context.status)}개 항목 변경 감지")
-    print(f"[INFO] Git diff 수집 완료: {count_non_empty_lines(git_context.combined_diff())}줄")
+    print(f"[INFO] Git diff 컨텍스트 수집 완료: {count_non_empty_lines(git_context.combined_diff())}줄")
 
     prompt_context = prepare_prompt_context(git_context, args.safe_mode)
     prompt = build_prompt(args.command, prompt_context)

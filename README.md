@@ -166,7 +166,7 @@ git diff --cached
 
 ```text
 [INFO] Git status 수집 완료: 2개 항목 변경 감지
-[INFO] Git diff 수집 완료: 48줄
+[INFO] Git diff 컨텍스트 수집 완료: 48줄
 [INFO] AI API 요청 중...
 [DONE] Commit Message Draft 생성 완료
 [INFO] AI API 요청 시도 횟수: 1
@@ -182,7 +182,7 @@ feat: Add Git-based commit message generation
 
 ```text
 [INFO] Git status 수집 완료: 3개 항목 변경 감지
-[INFO] Git diff 수집 완료: 72줄
+[INFO] Git diff 컨텍스트 수집 완료: 72줄
 [INFO] safe-mode 활성화: 민감정보 패턴을 마스킹했습니다.
 [INFO] AI API 요청 중...
 [DONE] Pull Request Draft 생성 완료
